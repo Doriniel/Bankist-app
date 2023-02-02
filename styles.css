@@ -1,8 +1,96 @@
 * {
     font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 62.5%;
+    box-sizing: border-box;
 }
 
 body{
     background-color: #f3f3f3;
     color: #444;
+    height: 100vh;
+    padding: 2rem;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.welcome{
+    font-size: 1.9rem;
+    font-weight: 500;
+}
+
+.logo{
+    height: 5.25rem;
+}
+
+.login{
+    display: flex;
+}
+
+.login__input{
+    width: 12rem;
+    text-align: center;
+    font-size: 1.6rem;
+    padding: 0.5rem 2rem;
+    margin-right: 1rem;
+    border-radius: 10rem;
+    border: 1px solid #fff;
+    color: inherit;
+    transition: all 0.3s;
+}
+
+.login__input:focus {
+    outline: none;
+    border: 1px solid #ccc;
+  }
+  
+.login_btn{
+    border: none;
+    font-size: 2.6rem;
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.login__btn:hover,
+.login__btn:focus {
+  outline: none;
+  color: #777;
+}
+
+.app{
+    max-width: 100rem;
+    margin: 4rem auto;
+    opacity: 100;
+    transition: all 1s;
+}
+
+.balance{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+}
+
+.balance__label{
+    font-size: 2.1rem;
+    font-weight: 500;
+}
+
+.balance__date{
+    font-size: 1.4rem;
+    color: #888;
+}
+
+.balance__value {
+    font-size: 4.5rem;
 }
