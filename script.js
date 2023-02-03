@@ -76,7 +76,7 @@ const displayMovements = function(movements){
         const html = `<div class="movements__row">
         <div class="movements__type movements__type--${type}">${i+1} ${type}</div>
         <div class="movements__date">3 days ago</div>
-        <div class="movements__value">${mov}</div>
+        <div class="movements__value">${mov}€</div>
         </div>
         `;
         containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -85,22 +85,33 @@ const displayMovements = function(movements){
 
 displayMovements(account1.movements);
 
-
 const calcDisplayMovements = function(movements){
     let balance = movements.reduce((accum, el) => accum + el, 0);
 
-    labelBalance.textContent = `${balance} €`;
+    labelBalance.textContent = `${balance}€`;
 }
 
 calcDisplayMovements(account1.movements);
 
-// const withdrawals = movements.filter( mov => mov < 0);
-// console.log(`withdrawals: ${withdrawals}`);
-// const deposits = movements.filter( mov => mov > 0);
-// console.log(`deposits: ${deposits}`);
+const calcDisplaySummary = function(movements){
+    const income = movements.filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+
+    const outcome = movements.filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+
+    const interest = movements.filter( mov => mov > 0)
+    .map(deposit => deposit * 1.2/ 100)
+    .reduce((acc, deposit) => acc + deposit, 0);
+
+    labelSumIn.textContent = `${income}€`;
+    labelSumOut.textContent = `${Math.abs(outcome)}€`;
+    labelSumInterest.textContent = `${interest}€`;
+}
+
+calcDisplaySummary(account1.movements);
 
 // create username property for each account:
-
 const createUsername = function(accounts) {
     accounts.forEach(acc => {
         acc.username = acc.owner
@@ -114,15 +125,7 @@ const createUsername = function(accounts) {
 createUsername(accounts);
 
 
-let sum = movements.reduce(function(accum, el, i){
-    // console.log(`Iteration ${i}: accumulator = ${accum}`);
-    return accum + el
-}, 0);
-
-// console.log(sum);
-
-let max = movements.reduce((accum, el) => (accum > el ? accum : el), movements[0]);
-
-console.log(max);
+// let max = movements.reduce((accum, el) => (accum > el ? accum : el), movements[0]);
+// console.log(max);
 
 
