@@ -70,7 +70,7 @@ nav {
 .app {
     max-width: 100rem;
     margin: 4rem auto;
-    opacity: 100;
+    opacity: 0;
     transition: all 1s;
     display: grid;
     grid-template-rows: auto repeat(3, 15rem) auto;

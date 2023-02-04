@@ -83,25 +83,25 @@ const displayMovements = function (movements) {
     })
 }
 
-displayMovements(account1.movements);
-
 const calcDisplayMovements = function (movements) {
     let balance = movements.reduce((accum, el) => accum + el, 0);
 
     labelBalance.textContent = `${balance}€`;
 }
 
-calcDisplayMovements(account1.movements);
 
-const calcDisplaySummary = function (movements) {
-    const income = movements.filter(mov => mov > 0)
+const calcDisplaySummary = function (account) {
+    console.log(account);
+    console.log(account.movements);
+
+    const income = account.movements.filter(mov => mov > 0)
         .reduce((acc, mov) => acc + mov, 0);
 
-    const outcome = movements.filter(mov => mov < 0)
+    const outcome = account.movements.filter(mov => mov < 0)
         .reduce((acc, mov) => acc + mov, 0);
 
-    const interest = movements.filter(mov => mov > 0)
-        .map(deposit => deposit * 1.2 / 100)
+    const interest = account.movements.filter(mov => mov > 0)
+        .map(deposit => deposit * account.interestRate / 100)
         .reduce((acc, deposit) => acc + deposit, 0);
 
     labelSumIn.textContent = `${income}€`;
@@ -109,7 +109,6 @@ const calcDisplaySummary = function (movements) {
     labelSumInterest.textContent = `${interest}€`;
 }
 
-calcDisplaySummary(account1.movements);
 
 // create username property for each account:
 const createUsername = function (accounts) {
@@ -132,10 +131,15 @@ btnLogin.addEventListener('click', function (event) {
     // check if credentials are correct and get current account;
     currentAccount = accounts.find(acc => acc.username === inputLoginUsername?.value && acc.pin === Number(inputLoginPin?.value));
 
-    console.log(currentAccount.movements);
-    //display UI and welcome message, clear content of inputs (login)
+    //display UI and welcome message, clear content of inputs (login):
+    containerApp.style.opacity = 100;
+    inputLoginUsername.value = inputLoginPin.value = "";
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(" ")[0]}`;
 
-    // calculate balance, summary and movements for current acc.
+    // calculate balance, summary and movements for current acc:
+    calcDisplaySummary(currentAccount);
+    calcDisplayMovements(currentAccount.movements);
+    displayMovements(currentAccount.movements);
 })
 
 // let max = movements.reduce((accum, el) => (accum > el ? accum : el), movements[0]);
