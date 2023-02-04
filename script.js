@@ -68,13 +68,13 @@ const currencies = new Map([
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-const displayMovements = function(movements){
+const displayMovements = function (movements) {
     containerMovements.innerHTML = "";
 
-    movements.forEach(function(mov, i) {
+    movements.forEach(function (mov, i) {
         const type = mov > 0 ? 'deposit' : 'withdrawal';
         const html = `<div class="movements__row">
-        <div class="movements__type movements__type--${type}">${i+1} ${type}</div>
+        <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
         <div class="movements__date">3 days ago</div>
         <div class="movements__value">${mov}€</div>
         </div>
@@ -85,7 +85,7 @@ const displayMovements = function(movements){
 
 displayMovements(account1.movements);
 
-const calcDisplayMovements = function(movements){
+const calcDisplayMovements = function (movements) {
     let balance = movements.reduce((accum, el) => accum + el, 0);
 
     labelBalance.textContent = `${balance}€`;
@@ -93,16 +93,16 @@ const calcDisplayMovements = function(movements){
 
 calcDisplayMovements(account1.movements);
 
-const calcDisplaySummary = function(movements){
+const calcDisplaySummary = function (movements) {
     const income = movements.filter(mov => mov > 0)
-    .reduce((acc, mov) => acc + mov, 0);
+        .reduce((acc, mov) => acc + mov, 0);
 
     const outcome = movements.filter(mov => mov < 0)
-    .reduce((acc, mov) => acc + mov, 0);
+        .reduce((acc, mov) => acc + mov, 0);
 
-    const interest = movements.filter( mov => mov > 0)
-    .map(deposit => deposit * 1.2/ 100)
-    .reduce((acc, deposit) => acc + deposit, 0);
+    const interest = movements.filter(mov => mov > 0)
+        .map(deposit => deposit * 1.2 / 100)
+        .reduce((acc, deposit) => acc + deposit, 0);
 
     labelSumIn.textContent = `${income}€`;
     labelSumOut.textContent = `${Math.abs(outcome)}€`;
@@ -112,18 +112,31 @@ const calcDisplaySummary = function(movements){
 calcDisplaySummary(account1.movements);
 
 // create username property for each account:
-const createUsername = function(accounts) {
+const createUsername = function (accounts) {
     accounts.forEach(acc => {
         acc.username = acc.owner
-        .toLowerCase()
-        .split(" ")
-        .map(word => word[0])
-        .join("");
+            .toLowerCase()
+            .split(" ")
+            .map(word => word[0])
+            .join("");
     })
 }
 
 createUsername(accounts);
 
+let currentAccount;
+
+btnLogin.addEventListener('click', function (event) {
+    event.preventDefault();
+
+    // check if credentials are correct and get current account;
+    currentAccount = accounts.find(acc => acc.username === inputLoginUsername?.value && acc.pin === Number(inputLoginPin?.value));
+
+    console.log(currentAccount.movements);
+    //display UI and welcome message, clear content of inputs (login)
+
+    // calculate balance, summary and movements for current acc.
+})
 
 // let max = movements.reduce((accum, el) => (accum > el ? accum : el), movements[0]);
 // console.log(max);
