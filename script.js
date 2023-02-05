@@ -141,16 +141,29 @@ btnLogin.addEventListener('click', function (event) {
     event.preventDefault();
 
     // check if credentials are correct and get current account;
-    currentAccount = accounts.find(acc => acc.username === inputLoginUsername?.value && acc.pin === Number(inputLoginPin?.value));
+    currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
+    
+    if ( currentAccount?.pin === Number(inputLoginPin.value)) {
 
-    //display UI and welcome message, clear content of inputs (login):
+    //display UI and welcome message:
     containerApp.style.opacity = 100;
-    inputLoginUsername.value = inputLoginPin.value = "";
     labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(" ")[0]}`;
+
+    // clear content of inputs (login):
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
 
     // update UI:
     updateUI(currentAccount);
+    }
 })
+
+
+// logging-out: hide UI and welcome message:
+const hideUI = function(){
+    containerApp.style.opacity = 0;
+    labelWelcome.textContent = 'Log in to get started';
+}
 
 // let max = movements.reduce((accum, el) => (accum > el ? accum : el), movements[0]);
 // console.log(max);
@@ -182,3 +195,26 @@ btnTransfer.addEventListener('click', function(event){
     }
 })
 
+// functionality of closing the account:
+
+btnClose.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    if (currentAccount.username === inputCloseUsername.value && currentAccount.pin === Number(inputClosePin.value)) {
+
+        // find index of accout to delete:
+        let closedAccountIndex = accounts.findIndex(acc => acc.username === inputCloseUsername.value);
+
+        // deleting the account from the array of accounts:
+        accounts.splice(closedAccountIndex, 1);
+
+        // hide Ui to log-out;
+    
+        hideUI();
+        console.log(accounts);
+    }
+
+    inputCloseUsername.value = inputClosePin.value = "";
+})
+
+// Idea: to make a dialogue window when recepient of transfer do not exist?(input - button)
