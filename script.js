@@ -83,16 +83,14 @@ const displayMovements = function (movements) {
     })
 }
 
-const calcDisplayBalance = function (movements) {
-    let balance = movements.reduce((accum, el) => accum + el, 0);
+const calcDisplayBalance = function (account) {
+    account.balance = account.movements.reduce((accum, el) => accum + el, 0);
 
-    labelBalance.textContent = `${balance}€`;
+    labelBalance.textContent = `${account.balance}€`;
 }
 
 
 const calcDisplaySummary = function (account) {
-    console.log(account);
-    console.log(account.movements);
 
     const income = account.movements.filter(mov => mov > 0)
         .reduce((acc, mov) => acc + mov, 0);
@@ -117,12 +115,11 @@ const updateUI = function(acc) {
     calcDisplaySummary(acc);
 
     // calculate and display balance:
-    calcDisplayBalance(acc.movements);
+    calcDisplayBalance(acc);
 
     //display money movements:
     displayMovements(acc.movements);
 }
-
 
 
 // create username property for each account:
@@ -158,4 +155,30 @@ btnLogin.addEventListener('click', function (event) {
 // let max = movements.reduce((accum, el) => (accum > el ? accum : el), movements[0]);
 // console.log(max);
 
+// functionality of transfer money:
+// 0. check if recipient exists, it's not to itself, amount of money > 0 and <= balance, 
+// 1. add negative movement to current user; 
+// 2. add positive movement to recipient;
+// 3. update UI and hide input values;
+
+btnTransfer.addEventListener('click', function(event){
+    event.preventDefault();
+
+    const recievingAcc = accounts.find(acc => acc.username === inputTransferTo.value);
+    const transferAmount = Number(inputTransferAmount.value);
+
+    if (recievingAcc && 
+        transferAmount > 0 &&
+        transferAmount <= currentAccount.balance &&
+        currentAccount?.username !== inputTransferTo.value) {
+            
+            inputTransferTo.value = inputTransferAmount.value = "";
+
+            currentAccount.movements.push(-transferAmount);
+            recievingAcc.movements.push(transferAmount);
+
+            updateUI(currentAccount);
+            console.log(`Transfer to ${recievingAcc.owner} in amount of ${transferAmount} was made.`)
+    }
+})
 
