@@ -83,7 +83,7 @@ const displayMovements = function (movements) {
     })
 }
 
-const calcDisplayMovements = function (movements) {
+const calcDisplayBalance = function (movements) {
     let balance = movements.reduce((accum, el) => accum + el, 0);
 
     labelBalance.textContent = `${balance}€`;
@@ -108,6 +108,21 @@ const calcDisplaySummary = function (account) {
     labelSumOut.textContent = `${Math.abs(outcome)}€`;
     labelSumInterest.textContent = `${interest}€`;
 }
+
+// update UI:
+
+const updateUI = function(acc) {
+
+    // calculate and display summary:
+    calcDisplaySummary(acc);
+
+    // calculate and display balance:
+    calcDisplayBalance(acc.movements);
+
+    //display money movements:
+    displayMovements(acc.movements);
+}
+
 
 
 // create username property for each account:
@@ -136,10 +151,8 @@ btnLogin.addEventListener('click', function (event) {
     inputLoginUsername.value = inputLoginPin.value = "";
     labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(" ")[0]}`;
 
-    // calculate balance, summary and movements for current acc:
-    calcDisplaySummary(currentAccount);
-    calcDisplayMovements(currentAccount.movements);
-    displayMovements(currentAccount.movements);
+    // update UI:
+    updateUI(currentAccount);
 })
 
 // let max = movements.reduce((accum, el) => (accum > el ? accum : el), movements[0]);
