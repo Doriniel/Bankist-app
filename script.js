@@ -104,7 +104,7 @@ const calcDisplaySummary = function (account) {
 
     labelSumIn.textContent = `${income}€`;
     labelSumOut.textContent = `${Math.abs(outcome)}€`;
-    labelSumInterest.textContent = `${interest}€`;
+    labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 }
 
 // update UI:
@@ -194,6 +194,24 @@ btnTransfer.addEventListener('click', function(event){
             console.log(`Transfer to ${recievingAcc.owner} in amount of ${transferAmount} was made.`)
     }
 })
+
+
+// functionality to request a loan: 
+// flowchart - the account should have at least 1 deposit that is 10% more than loan amount.
+
+btnLoan.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    const loanAmount = Number(inputLoanAmount.value);
+
+    if(loanAmount > 0 && currentAccount.movements.some(mov => mov > loanAmount * 0.1)) {
+        currentAccount.movements.push(loanAmount);
+
+        updateUI(currentAccount);
+    }
+    inputLoanAmount.value = "";
+})
+
 
 // functionality of closing the account:
 
