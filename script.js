@@ -235,4 +235,25 @@ btnClose.addEventListener('click', function(event) {
     inputCloseUsername.value = inputClosePin.value = "";
 })
 
+// sorting: if it's sorted - than display movements, if it is not sorted - 1) sort, 2) display movements;
+// we need variable with state of sorting, outside of this function. and change it (true| false).
+
+let sortedMov;
+let stateSort = false;
+
+btnSort.addEventListener('click', function(event){
+    event.preventDefault();
+
+    // with slice() making a copy of an array - not to mutate original:
+    sortedMov = currentAccount.movements.slice().sort((a, b) => a - b);
+
+    if(stateSort) {
+        displayMovements(currentAccount.movements);
+    } else if (!stateSort){
+        displayMovements(sortedMov);
+    }
+    
+    stateSort = !stateSort;
+})
+
 // Idea: to make a dialogue window when recepient of transfer do not exist?(input - button)
