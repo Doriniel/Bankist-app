@@ -132,8 +132,6 @@ const currencies = new Map([
 const displayMovements = function (account) {
     containerMovements.innerHTML = "";
 
-    console.log(account);
-
     account.movements.forEach(function (mov, i) {
 
         const date = new Date(account.movementsDates[i]);
@@ -205,7 +203,7 @@ const createUsername = function (accounts) {
 
 createUsername(accounts);
 
-let currentAccount;
+let currentAccount, timer;
 
 btnLogin.addEventListener('click', function (event) {
     event.preventDefault();
@@ -232,6 +230,12 @@ btnLogin.addEventListener('click', function (event) {
         inputLoginUsername.value = inputLoginPin.value = "";
         inputLoginPin.blur();
 
+        // set timer and check if only 1 timer at a time is existing:
+        if (timer) {
+            clearInterval(timer)
+        }
+        timer = startLogOutTimer();
+
         // update UI:
         updateUI(currentAccount);
     }
@@ -244,8 +248,6 @@ const hideUI = function () {
     labelWelcome.textContent = 'Log in to get started';
 }
 
-// let max = movements.reduce((accum, el) => (accum > el ? accum : el), movements[0]);
-// console.log(max);
 
 // functionality of transfer money:
 // 0. check if recipient exists, it's not to itself, amount of money > 0 and <= balance, 
@@ -266,14 +268,21 @@ btnTransfer.addEventListener('click', function (event) {
 
         inputTransferTo.value = inputTransferAmount.value = "";
 
+        // doing the transfer:
         currentAccount.movements.push(-transferAmount);
         recievingAcc.movements.push(transferAmount);
 
+        //adding transfer date to data:
         currentAccount.movementsDates.push(new Date().toISOString());
         recievingAcc.movementsDates.push(new Date().toISOString());
 
+        // Update UI:
         updateUI(currentAccount);
         console.log(`Transfer to ${recievingAcc.owner} in amount of ${transferAmount} was made.`)
+
+        // Reset timer - as an activity was made:
+        clearInterval(timer);
+        timer = startLogOutTimer();
     }
 })
 
@@ -287,11 +296,17 @@ btnLoan.addEventListener('click', function (event) {
     const loanAmount = Number(inputLoanAmount.value);
 
     if (loanAmount > 0 && currentAccount.movements.some(mov => mov > loanAmount * 0.1)) {
-        
-        currentAccount.movements.push(loanAmount);
-        currentAccount.movementsDates.push(new Date().toISOString());
 
-        updateUI(currentAccount);
+        setTimeout(function () {
+            currentAccount.movements.push(loanAmount);
+            currentAccount.movementsDates.push(new Date().toISOString());
+
+            updateUI(currentAccount);
+
+            // Reset timer - as an activity was made:
+            clearInterval(timer);
+            timer = startLogOutTimer();
+        }, 3000)
     }
     inputLoanAmount.value = "";
 })
@@ -341,3 +356,29 @@ btnSort.addEventListener('click', function (event) {
 })
 
 // Idea: to make a dialogue window when recepient of transfer do not exist?(input - button)
+
+
+const startLogOutTimer = function () {
+    let timerMin = 66;
+
+    const tick = function () {
+        let min = String(Math.trunc(timerMin / 60)).padStart(2, 0);
+        let sec = String(Math.trunc(timerMin % 60)).padStart(2, 0);
+
+        labelTimer.textContent = `${min}:${sec}`;
+
+        if (timerMin === 0) {
+            clearInterval(timerFunc);
+            hideUI();
+        }
+
+        timerMin--;
+    }
+
+    tick();
+
+    const timerFunc = setInterval(tick, 1000);
+    return timerFunc;
+}
+
+
