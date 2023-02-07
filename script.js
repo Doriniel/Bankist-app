@@ -112,27 +112,16 @@ const currencies = new Map([
     ['GBP', 'Pound sterling'],
 ]);
 
-// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+let currentAccount, timer;
 
-// const displayMovements = function (movements) {
-//     containerMovements.innerHTML = "";
-
-//     movements.forEach(function (mov, i) {
-//         const type = mov > 0 ? 'deposit' : 'withdrawal';
-//         const html = `<div class="movements__row">
-//         <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-//         <div class="movements__date">3 days ago</div>
-//         <div class="movements__value">${mov}€</div>
-//         </div>
-//         `;
-//         containerMovements.insertAdjacentHTML('afterbegin', html);
-//     })
-// }
-
-const displayMovements = function (account) {
+const displayMovements = function (account, sort = false) {
     containerMovements.innerHTML = "";
 
-    account.movements.forEach(function (mov, i) {
+    // sorting logic:
+    // with slice() making a copy of an array - not to mutate original:
+    const movs = sort ? account.movements.slice().sort((a, b) => a - b) : account.movements;
+
+    movs.forEach(function (mov, i) {
 
         const date = new Date(account.movementsDates[i]);
         const year = date.getFullYear();
@@ -170,8 +159,8 @@ const calcDisplaySummary = function (account) {
         .map(deposit => deposit * account.interestRate / 100)
         .reduce((acc, deposit) => acc + deposit, 0);
 
-    labelSumIn.textContent = `${income}€`;
-    labelSumOut.textContent = `${Math.abs(outcome)}€`;
+    labelSumIn.textContent = `${income.toFixed(2)}€`;
+    labelSumOut.textContent = `${Math.abs(outcome).toFixed(2)}€`;
     labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 }
 
@@ -202,8 +191,6 @@ const createUsername = function (accounts) {
 }
 
 createUsername(accounts);
-
-let currentAccount, timer;
 
 btnLogin.addEventListener('click', function (event) {
     event.preventDefault();
@@ -337,29 +324,18 @@ btnClose.addEventListener('click', function (event) {
 // sorting: if it's sorted - than display movements, if it is not sorted - 1) sort, 2) display movements;
 // we need variable with state of sorting, outside of this function. and change it (true| false).
 
-let sortedMov;
 let stateSort = false;
 
 btnSort.addEventListener('click', function (event) {
     event.preventDefault();
 
-    // with slice() making a copy of an array - not to mutate original:
-    sortedMov = currentAccount.movements.slice().sort((a, b) => a - b);
-
-    if (stateSort) {
-        displayMovements(currentAccount.movements);
-    } else if (!stateSort) {
-        displayMovements(sortedMov);
-    }
-
+    displayMovements(currentAccount, !stateSort);
     stateSort = !stateSort;
 })
 
-// Idea: to make a dialogue window when recepient of transfer do not exist?(input - button)
-
 
 const startLogOutTimer = function () {
-    let timerMin = 66;
+    let timerMin = 10 * 60;
 
     const tick = function () {
         let min = String(Math.trunc(timerMin / 60)).padStart(2, 0);
@@ -382,3 +358,5 @@ const startLogOutTimer = function () {
 }
 
 
+
+// Idea: to make a dialogue window when recepient of transfer do not exist?(input - button)
